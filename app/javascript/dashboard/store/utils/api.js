@@ -9,6 +9,17 @@ import {
 } from '../../helper/scriptHelpers';
 import { LocalStorage, LOCAL_STORAGE_KEYS } from '../../helper/localStorage';
 
+/* TODO: JSFIX could not patch the breaking change:
+Removed defaults in favor of a builder: now to supply an api instance with particular predefined (cookie) attributes there's Cookies.withAttributes() 
+Suggested fix: To declare default properties for each cookie you now have to create your own api instance. 
+By this we simply mean that instead of using Cookie.set()/get() you would use your own cookie api object, for which these default properties were already defined.
+You can define this api instance of Cookie with default properties by using `Cookies.withAttributes()`:
+  const api = Cookies.withAttributes({
+    // default properties, for instance -
+    // secure: true
+  })
+The big complication this brings is that each place in your code where you are using the default properties, you will now have to use this new api instance instead of the default Cookie object.
+For another example of this, see the official changelog: https://github.com/js-cookie/js-cookie/releases/tag/v3.0.0 */
 Cookies.defaults = { sameSite: 'Lax' };
 
 export const getLoadingStatus = state => state.fetchAPIloadingStatus;
@@ -26,7 +37,7 @@ export const getHeaderExpiry = response =>
 
 export const setAuthCredentials = response => {
   const expiryDate = getHeaderExpiry(response);
-  Cookies.set('cw_d_session_info', response.headers, {
+  Cookies.set('cw_d_session_info', JSON.stringify(response.headers), {
     expires: differenceInDays(expiryDate, new Date()),
   });
   setUser(response.data.data, expiryDate);

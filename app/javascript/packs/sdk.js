@@ -80,7 +80,7 @@ const runSDK = ({ baseUrl, websiteToken }) => {
       }
 
       const userCookieName = getUserCookieName();
-      const existingCookieValue = Cookies.get(userCookieName);
+      const existingCookieValue = JSON.parse(Cookies.get(userCookieName));
       const hashToBeStored = computeHashForUserData({ identifier, user });
       if (hashToBeStored === existingCookieValue) {
         return;
@@ -89,7 +89,7 @@ const runSDK = ({ baseUrl, websiteToken }) => {
       window.$chatwoot.identifier = identifier;
       window.$chatwoot.user = user;
       IFrameHelper.sendMessage('set-user', { identifier, user });
-      Cookies.set(userCookieName, hashToBeStored, {
+      Cookies.set(userCookieName, JSON.stringify(hashToBeStored), {
         expires: 365,
         sameSite: 'Lax',
       });

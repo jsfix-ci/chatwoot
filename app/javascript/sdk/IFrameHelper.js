@@ -33,7 +33,7 @@ import { isFlatWidgetStyle } from './settingsHelper';
 import { popoutChatWindow } from '../widget/helpers/popoutHelper';
 
 const updateAuthCookie = cookieContent =>
-  Cookies.set('cw_conversation', cookieContent, {
+  Cookies.set('cw_conversation', JSON.stringify(cookieContent), {
     expires: 365,
     sameSite: 'Lax',
   });
@@ -49,7 +49,7 @@ export const IFrameHelper = {
 
     loadCSS();
     const iframe = document.createElement('iframe');
-    const cwCookie = Cookies.get('cw_conversation');
+    const cwCookie = JSON.parse(Cookies.get('cw_conversation'));
     let widgetUrl = IFrameHelper.getUrl({ baseUrl, websiteToken });
     if (cwCookie) {
       widgetUrl = `${widgetUrl}&cw_conversation=${cwCookie}`;
@@ -196,7 +196,7 @@ export const IFrameHelper = {
     },
 
     popoutChatWindow: ({ baseUrl, websiteToken, locale }) => {
-      const cwCookie = Cookies.get('cw_conversation');
+      const cwCookie = JSON.parse(Cookies.get('cw_conversation'));
       window.$chatwoot.toggle('close');
       popoutChatWindow(baseUrl, websiteToken, locale, cwCookie);
     },
